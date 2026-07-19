@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Review — DownloadHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .mermaid { background: #1e293b; border-radius: 8px; padding: 16px; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+        .badge-strong { background: #22c55e; color: white; }
+        .badge-worth { background: #eab308; color: #1e293b; }
+        .badge-speculative { background: #64748b; color: white; }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-6 py-12">
+        <!-- Header -->
+        <header class="mb-12">
+            <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                Architecture Review
+            </h1>
+            <p class="text-gray-400 text-lg">DownloadHub — Torrent & YouTube Downloader</p>
+            <p class="text-gray-500 text-sm mt-2">Generated: <span id="timestamp"></span></p>
+        </header>
+
+        <!-- Executive Summary -->
+        <section class="bg-gray-900 rounded-xl p-6 mb-8 border border-gray-800">
+            <h2 class="text-xl font-semibold mb-4 text-blue-400">Executive Summary</h2>
+            <p class="text-gray-300 leading-relaxed">
+                This review identifies <strong class="text-white">4 deepening opportunities</strong> that would transform shallow modules into deep, testable, and AI-navigable modules. 
+                The current architecture suffers from god objects, tight coupling, and zero testability. 
+                Each candidate below addresses a specific friction point with concrete before/after visualizations.
+            </p>
+        </section>
+
+        <!-- Candidate 1: Configuration Management -->
+        <section class="bg-gray-900 rounded-xl p-6 mb-8 border border-gray-800 card-hover transition-all duration-300">
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <h3 class="text-xl font-semibold text-white">1. Extract Configuration Module</h3>
+                    <p class="text-gray-400 text-sm mt-1">Files: <code class="bg-gray-800 px-2 py-1 rounded">web/app.py</code>, <code class="bg-gray-800 px-2 py-1 rounded">main.py</code></p>
+                </div>
+                <span class="badge badge-strong px-3 py-1 rounded-full text-sm font-medium">Strong</span>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <!-- Problem -->
+                <div class="bg-red-950/30 border border-red-900/50 rounded-lg p-4">
+                    <h4 class="text-red-400 font-medium mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                        Problem
+                    </h4>
+                    <p class="text-gray-300 text-sm">Configuration is scattered across multiple files with hardcoded defaults. The Windows-only path <code class="bg-gray-800 px-1 rounded">C:\Users\chinn\Downloads\...</code> breaks on other systems. No validation, no environment variable precedence, no testing.</p>
+                </div>
+
+                <!-- Solution -->
+                <div class="bg-green-950/30 border border-green-900/50 rounded-lg p-4">
+                    <h4 class="text-green-400 font-medium mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        Solution
+                    </h4>
+                    <p class="text-gray-300 text-sm">Create a <code class="bg-gray-800 px-1 rounded">config.py</code> module with a <code class="bg-gray-800 px-1 rounded">Settings</code> dataclass. Use environment variables with sensible cross-platform defaults. Add validation and make it injectable for testing.</p>
+                </div>
+            </div>
+
+            <!-- Benefits -->
+            <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 mb-6">
+                <h4 class="text-blue-400 font-medium mb-2">Benefits</h4>
+                <ul class="text-gray-300 text-sm space-y-1">
+                    <li>• <strong>Localité:</strong> All configuration in one place — no hunting across files</li>
+                    <li>• <strong>Leverage:</strong> Tests can inject different configs without touching env vars</li>
+                    <li>• <strong>Testability:</strong> Configuration becomes a seam for mocking</li>
+                </ul>
+            </div>
+
+            <!-- Before/After Diagram -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-gray-400 text-sm font-medium mb-3">Before: Scattered Configuration</h4>
+                    <div class="mermaid">
+graph TD
+    A[web/app.py] -->|hardcoded| B[DEFAULT_DOWNLOADS]
+    A -->|hardcoded| C[LISTEN_PORT]
+    A -->|hardcoded| D[WEB_PORT]
+    E[main.py] -->|no config| F[socketio.run]
+    B -.->|Windows only| G[Breaks on Linux/Mac]
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-gray-400 text-sm font-medium mb-3">After: Centralized Config</h4>
+                    <div class="mermaid">
+graph TD
+    A[config.py] -->|Settings dataclass| B[download_path]
+    A --> C[listen_port]
+    A --> D[web_port]
+    A --> E[secret_key]
+    F[web/app.py] -->|injects| A
+    G[main.py] -->|injects| A
+    A -->|validates| H[Cross-platform defaults]
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Candidate 2: Event Bus -->
+        <section class="bg-gray-900 rounded-xl p-6 mb-8 border border-gray-800 card-hover transition-all duration-300">
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <h3 class="text-xl font-semibold text-white">2. Extract Event Bus</h3>
+                    <p class="text-gray-400 text-sm mt-1">Files: <code class="bg-gray-800 px-2 py-1 rounded">core/torrent_client.py</code>, <code class="bg-gray-800 px-2 py-1 rounded">core/youtube_client.py</code></p>
+                </div>
+                <span class="badge badge-strong px-3 py-1 rounded-full text-sm font-medium">Strong</span>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-red-950/30 border border-red-900/50 rounded-lg p-4">
+                    <h4 class="text-red-400 font-medium mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                        Problem
+                    </h4>
+                    <p class="text-gray-300 text-sm">Both clients duplicate the same callback pattern: <code class="bg-gray-800 px-1 rounded">callbacks: List[Callable]</code>, <code class="bg-gray-800 px-1 rounded">add_callback()</code>, <code class="bg-gray-800 px-1 rounded">_notify()</code>. The web layer tightly couples to client internals by registering callbacks at module level.</p>
+                </div>
+
+                <div class="bg-green-950/30 border border-green-900/50 rounded-lg p-4">
+                    <h4 class="text-green-400 font-medium mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        Solution
+                    </h4>
+                    <p class="text-gray-300 text-sm">Create an <code class="bg-gray-800 px-1 rounded">EventBus</code> class with typed events. Clients emit events; the web layer subscribes. Decouples producers from consumers entirely.</p>
+                </div>
+            </div>
+
+            <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 mb-6">
+                <h4 class="text-blue-400 font-medium mb-2">Benefits</h4>
+                <ul class="text-gray-300 text-sm space-y-1">
+                    <li>• <strong>Localité:</strong> All event routing in one place</li>
+                    <li>• <strong>Leverage:</strong> Can add logging, replay, or filtering in one spot</li>
+                    <li>• <strong>Testability:</strong> Subscribe mock handlers in tests</li>
+                </ul>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-gray-400 text-sm font-medium mb-3">Before: Duplicated Callback Pattern</h4>
+                    <div class="mermaid">
+graph TD
+    subgraph TorrentClient
+        A1[callbacks: List] --> B1[add_callback]
+        B1 --> C1[_notify]
+    end
+    subgraph YouTubeClient
+        A2[callbacks: List] --> B2[add_callback]
+        B2 --> C2[_notify]
+    end
+    D[web/app.py] -->|tightly coupled| A1
+    D -->|tightly coupled| A2
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-gray-400 text-sm font-medium mb-3">After: Centralized Event Bus</h4>
+                    <div class="mermaid">
+graph TD
+    A[EventBus] -->|publish| B[TorrentClient]
+    A -->|publish| C[YouTubeClient]
+    D[web/app.py] -->|subscribe| A
+    E[tests] -->|mock subscribe| A
+    B -->|emits torrent_added| A
+    C -->|emits yt_updated| A
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Candidate 3: Download Manager Abstraction -->
+        <section class="bg-gray-900 rounded-xl p-6 mb-8 border border-gray-800 card-hover transition-all duration-300">
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <h3 class="text-xl font-semibold text-white">3. Unify Download Manager Interface</h3>
+                    <p class="text-gray-400 text-sm mt-1">Files: <code class="bg-gray-800 px-2 py-1 rounded">core/torrent_client.py</code>, <code class="bg-gray-800 px-2 py-1 rounded">core/youtube_client.py</code>, <code class="bg-gray-800 px-2 py-1 rounded">web/app.py</code></p>
+                </div>
+                <span class="badge badge-worth px-3 py-1 rounded-full text-sm font-medium">Worth Exploring</span>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-red-950/30 border border-red-900/50 rounded-lg p-4">
+                    <h4 class="text-red-400 font-medium mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                        Problem
+                    </h4>
+                    <p class="text-gray-300 text-sm">The web layer handles torrents and YouTube downloads completely separately with duplicate code paths. Adding a new download type (e.g., Usenet, direct HTTP) requires modifying multiple route handlers.</p>
+                </div>
+
+                <div class="bg-green-950/30 border border-green-900/50 rounded-lg p-4">
+                    <h4 class="text-green-400 font-medium mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        Solution
+                    </h4>
+                    <p class="text-gray-300 text-sm">Create a <code class="bg-gray-800 px-1 rounded">DownloadManager</code> facade that wraps both clients behind a unified interface. The web layer calls one API instead of two.</p>
+                </div>
+            </div>
+
+            <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 mb-6">
+                <h4 class="text-blue-400 font-medium mb-2">Benefits</h4>
+                <ul class="text-gray-300 text-sm space-y-1">
+                    <li>• <strong>Localité:</strong> All download logic behind one interface</li>
+                    <li>• <strong>Leverage:</strong> New download types only need to implement the interface</li>
+                    <li>• <strong>Testability:</strong> Mock the entire download subsystem in one go</li>
+                </ul>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-gray-400 text-sm font-medium mb-3">Before: Separate Code Paths</h4>
+                    <div class="mermaid">
+graph TD
+    A[web/app.py] -->|/api/torrents| B[TorrentClient]
+    A -->|/api/youtube| C[YouTubeClient]
+    D[web/app.py] -->|duplicate validation| E[_is_safe_path]
+    F[web/app.py] -->|duplicate error handling| G[try/except blocks]
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-gray-400 text-sm font-medium mb-3">After: Unified Interface</h4>
+                    <div class="mermaid">
+graph TD
+    A[web/app.py] -->|/api/downloads| B[DownloadManager]
+    B -->|add_download| C[torrent_client]
+    B -->|add_download| D[youtube_client]
+    B -->|get_all| E[Unified Response]
+    F[New: Usenet] -->|implements| B
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Candidate 4: Dependency Injection -->
+        <section class="bg-gray-900 rounded-xl p-6 mb-8 border border-gray-800 card-hover transition-all duration-300">
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <h3 class="text-xl font-semibold text-white">4. Add Dependency Injection Container</h3>
+                    <p class="text-gray-400 text-sm mt-1">Files: <code class="bg-gray-800 px-2 py-1 rounded">web/app.py</code>, <code class="bg-gray-800 px-2 py-1 rounded">main.py</code></p>
+                </div>
+                <span class="badge badge-worth px-3 py-1 rounded-full text-sm font-medium">Worth Exploring</span>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-red-950/30 border border-red-900/50 rounded-lg p-4">
+                    <h4 class="text-red-400 font-medium mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                        Problem
+                    </h4>
+                    <p class="text-gray-300 text-sm">Clients are instantiated at module import time in <code class="bg-gray-800 px-1 rounded">web/app.py</code>. This makes testing impossible without monkey-patching. The <code class="bg-gray-800 px-1 rounded">sys.path.insert</code> hacks are fragile.</p>
+                </div>
+
+                <div class="bg-green-950/30 border border-green-900/50 rounded-lg p-4">
+                    <h4 class="text-green-400 font-medium mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        Solution
+                    </h4>
+                    <p class="text-gray-300 text-sm">Use a simple factory pattern or Flask's <code class="bg-gray-800 px-1 rounded">app.app_context()</code> to create and inject clients. Proper Python package imports replace <code class="bg-gray-800 px-1 rounded">sys.path</code> hacks.</p>
+                </div>
+            </div>
+
+            <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 mb-6">
+                <h4 class="text-blue-400 font-medium mb-2">Benefits</h4>
+                <ul class="text-gray-300 text-sm space-y-1">
+                    <li>• <strong>Localité:</strong> All wiring in one place</li>
+                    <li>• <strong>Leverage:</strong> Swap implementations for testing or different environments</li>
+                    <li>• <strong>Testability:</strong> Inject mocks without monkey-patching</li>
+                </ul>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-gray-400 text-sm font-medium mb-3">Before: Module-Level Coupling</h4>
+                    <div class="mermaid">
+graph TD
+    A[web/app.py] -->|import at module level| B[sys.path.insert]
+    B --> C[core/torrent_client]
+    B --> D[core/youtube_client]
+    E[module-level instantiation] --> F[torrent_client = TorrentClient]
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-gray-400 text-sm font-medium mb-3">After: Factory Injection</h4>
+                    <div class="mermaid">
+graph TD
+    A[factory.py] -->|create_clients| B[TorrentClient]
+    A -->|create_clients| C[YouTubeClient]
+    D[web/app.py] -->|injects clients| E[app.torrent_client]
+    F[tests] -->|inject mocks| E
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Top Recommendation -->
+        <section class="bg-gradient-to-br from-blue-950 to-purple-950 rounded-xl p-8 border border-blue-800/50">
+            <h2 class="text-2xl font-bold mb-4 text-white">🏆 Top Recommendation</h2>
+            <div class="bg-gray-900/50 rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-blue-400 mb-3">Start with Candidate #1: Extract Configuration Module</h3>
+                <p class="text-gray-300 leading-relaxed mb-4">
+                    This is the <strong class="text-white">highest-leverage, lowest-risk</strong> change. It:
+                </p>
+                <ul class="text-gray-300 space-y-2 mb-4">
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-400 mt-1">✓</span>
+                        <span>Fixes the Windows-only default path bug immediately</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-400 mt-1">✓</span>
+                        <span>Creates a clean seam for testing all other components</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-400 mt-1">✓</span>
+                        <span>Takes ~30 minutes to implement</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-400 mt-1">✓</span>
+                        <span>No behavioral changes — pure structural improvement</span>
+                    </li>
+                </ul>
+                <p class="text-gray-400 text-sm">
+                    After config, tackle Candidate #2 (Event Bus) to decouple the clients from the web layer. 
+                    These two changes together will make the codebase dramatically more testable and navigable.
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        mermaid.initialize({ theme: 'dark', startOnLoad: true });
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+    </script>
+</body>
+</html>

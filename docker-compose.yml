@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  torrent-downloader:
+    build: .
+    container_name: torrent-downloader
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./downloads:/app/downloads
+      - ./config:/app/config
+    environment:
+      - DOWNLOAD_PATH=/app/downloads
+    restart: unless-stopped
+    networks:
+      - torrent-network
+
+networks:
+  torrent-network:
+    driver: bridge

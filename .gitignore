@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.env
+.venv
+env/
+venv/
+
+# Logs
+*.log
+server*.log
+
+# Downloads directory (runtime data)
+downloads/*
+!downloads/.gitkeep
+
+# Config (runtime data)
+config/*
+!config/.gitkeep
+
+# Test files
+test.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+.dockerignore
+
+# Agent Customizations
+.agents/
+.claude/
+skills-lock.json
+
+# Process IDs
+server.pid

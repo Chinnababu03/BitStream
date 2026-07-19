@@ -1,0 +1,110 @@
+# RUNBOOK: BitStream Web App
+
+This runbook explains how to start, access, and manage the BitStream web application.
+
+---
+
+## Prerequisites
+
+Ensure you have one of the following installed based on your preferred deployment method:
+- **Python Method**: Python 3.8+ and `pip`
+- **Docker Method**: Docker and Docker Compose
+
+---
+
+## Deployment Options
+
+### Option 1: Using the Startup Scripts (Recommended for Local Dev)
+
+The repository provides startup scripts that handle basic configuration and environment variable setup automatically.
+
+#### On Windows:
+1. Double-click `start.bat` or run it from Command Prompt / PowerShell:
+   ```cmd
+   .\start.bat
+   ```
+
+#### On Linux / macOS:
+1. Make the script executable:
+   ```bash
+   chmod +x start.sh
+   ```
+2. Run the script:
+   ```bash
+   ./start.sh
+   ```
+
+---
+
+### Option 2: Manual Python Startup
+
+If you prefer to manage the virtual environment and command executions manually, follow these steps:
+
+1. **Create a Virtual Environment**:
+   ```bash
+   python -m venv venv
+   ```
+
+2. **Activate the Virtual Environment**:
+   - **Windows (CMD/PowerShell)**:
+     ```cmd
+     .\venv\Scripts\activate
+     ```
+   - **Linux / macOS**:
+     ```bash
+     source venv/bin/activate
+     ```
+
+3. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Run the Application**:
+   ```bash
+   python main.py
+   ```
+
+---
+
+### Option 3: Using Docker / Docker Compose (Recommended for Production/Headless)
+
+#### Using Docker Compose:
+To spin up the container in detached (background) mode:
+```bash
+docker-compose up -d
+```
+To stop the application:
+```bash
+docker-compose down
+```
+
+#### Using Dockerfile directly:
+1. Build the image:
+   ```bash
+   git clone https://github.com/Chinnababu03/BitStream.git
+   cd BitStream
+   docker build -t bitstream .
+   ```
+2. Run the container:
+   ```bash
+   docker run -d -p 8080:8080 -v downloads:/app/downloads bitstream
+   ```
+
+---
+
+## Accessing the Web UI
+
+Once the application has started, open your web browser and navigate to:
+* **URL**: [http://localhost:8080](http://localhost:8080)
+
+---
+
+## Configuration & Environment Variables
+
+The application can be customized using the following environment variables:
+- `DOWNLOAD_PATH`: Directory where downloads will be saved.
+  - Default (Docker): `/app/downloads`
+  - Default (Local/Windows): `C:\Users\chinn\Downloads\TorrentDownloaders`
+  - Default (Local/Linux): `$HOME/Downloads/TorrentDownloaders`
+- `LISTEN_PORT`: Port libtorrent uses to listen for incoming peer connections (default: `6881`).
