@@ -167,6 +167,17 @@ class DownloadManager:
             'youtube': self.youtube_client.get_all_downloads()
         }
 
+    def set_download_path(self, new_path: str) -> None:
+        """Update the default download path and apply it to active download clients."""
+        import os
+        abs_path = os.path.abspath(new_path)
+        os.makedirs(abs_path, exist_ok=True)
+        
+        self.settings.update_download_path(abs_path)
+        self.torrent_client.save_path = abs_path
+        self.youtube_client.save_path = abs_path
+        logger.info("Default download path updated to: %s", abs_path)
+
     def is_safe_path(self, path: str) -> bool:
         """Validate a save path is within allowed directory.
 

@@ -196,7 +196,7 @@ def create_app(settings: Settings = None) -> tuple:
         return jsonify({
             'download_limit': 0,
             'upload_limit': 0,
-            'save_path': app_settings.download_path
+            'save_path': manager.settings.download_path
         })
 
     @app.route('/api/settings', methods=['POST'])
@@ -206,6 +206,12 @@ def create_app(settings: Settings = None) -> tuple:
             manager.set_download_limit(int(data['download_limit']))
         if data.get('upload_limit') is not None:
             manager.set_upload_limit(int(data['upload_limit']))
+        if data.get('save_path') is not None:
+            try:
+                manager.set_download_path(data['save_path'].strip())
+            except Exception as e:
+                logger.error("Failed to update download path: %s", e)
+                return jsonify({'error': str(e)}), 400
         return jsonify({'success': True})
 
     @app.route('/api/pause-all', methods=['POST'])
@@ -217,6 +223,63 @@ def create_app(settings: Settings = None) -> tuple:
     def resume_all():
         manager.resume_all_torrents()
         return jsonify({'success': True})
+
+    @app.route('/api/browse-dir', methods=['GET'])
+    def browse_dir():
+        """API for browsing directories on the server's local file system."""
+        path_query = request.args.get('path', '').strip()
+        
+        # If no path is provided, default to user's home directory
+        if not path_query:
+            path_query = os.path.expanduser("~")
+            
+        path_abs = os.path.abspath(path_query)
+        
+        # If the path does not exist, fall back to home or root
+        if not os.path.exists(path_abs) or not os.path.isdir(path_abs):
+            path_abs = os.path.expanduser("~")
+            if not os.path.exists(path_abs):
+                path_abs = os.path.abspath(os.sep)
+                
+        subdirs = []
+        drives = []
+        
+        try:
+            for name in os.listdir(path_abs):
+                full_path = os.path.join(path_abs, name)
+                if os.path.isdir(full_path):
+                    # Exclude system folders and hidden directories
+                    if not name.startswith('.') and not name.startswith('$') and name.lower() != 'system volume information':
+                        subdirs.append(name)
+            subdirs.sort(key=str.lower)
+        except Exception:
+            # Handle permission errors gracefully
+            pass
+            
+        parent = os.path.dirname(path_abs)
+        # If parent is equal to path, we are at the system root (e.g. C:\ or /)
+        if parent == path_abs:
+            parent = None
+            
+        # Drive detection on Windows when parent is None (at root level)
+        if os.name == 'nt' and not parent:
+            import string
+            try:
+                from ctypes import windll
+                bitmask = windll.kernel32.GetLogicalDrives()
+                for letter in string.ascii_uppercase:
+                    if bitmask & 1:
+                        drives.append(f"{letter}:\\")
+                    bitmask >>= 1
+            except Exception:
+                pass
+                
+        return jsonify({
+            'current_path': path_abs,
+            'parent_path': parent,
+            'subdirs': subdirs,
+            'drives': drives
+        })
 
     # -----------------------------------------------------------------------
     # YouTube API

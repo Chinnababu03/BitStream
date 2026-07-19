@@ -948,6 +948,38 @@
         .modal-body { padding: 24px; overflow-y: auto; flex: 1; }
         .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-faint); display: flex; gap: 10px; justify-content: flex-end; }
 
+        /* Directory list styling */
+        .dir-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border-faint);
+            color: var(--text-dim);
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.15s ease;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .dir-item:last-child {
+            border-bottom: none;
+        }
+        .dir-item:hover {
+            background: var(--bg-hover);
+            color: var(--text);
+        }
+        .dir-item i {
+            font-size: 16px;
+            color: var(--accent);
+        }
+        .dir-item.parent-dir i {
+            color: var(--yellow);
+        }
+        .dir-item.drive-item i {
+            color: var(--purple);
+        }
+
         /* Info Table */
         .info-table { width: 100%; border-collapse: collapse; }
         .info-table tr td { padding: 10px 0; border-bottom: 1px solid var(--border-faint); font-size: 13px; }
@@ -1377,8 +1409,10 @@
 
                 <div class="form-group">
                     <label class="form-label">Save Path <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional — leave blank for default)</span></label>
-                    <input type="text" class="form-control" id="torrent-save-path"
-                           placeholder="e.g. C:\Users\you\Downloads">
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" class="form-control" id="torrent-save-path" placeholder="e.g. C:\Users\you\Downloads">
+                        <button class="btn btn-ghost" onclick="openDirBrowser('torrent-save-path')" style="padding:10px 14px"><i class="bi bi-folder2-open"></i> Browse...</button>
+                    </div>
                 </div>
             </div>
 
@@ -1409,7 +1443,10 @@
 
                 <div class="form-group">
                     <label class="form-label">Save Path <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
-                    <input type="text" class="form-control" id="yt-save-path" placeholder="Leave blank for default">
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" class="form-control" id="yt-save-path" placeholder="Leave blank for default">
+                        <button class="btn btn-ghost" onclick="openDirBrowser('yt-save-path')" style="padding:10px 14px"><i class="bi bi-folder2-open"></i> Browse...</button>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -1489,10 +1526,16 @@
                 <h3><i class="bi bi-folder2-open" style="margin-right:8px;color:var(--accent)"></i>Storage</h3>
                 <div class="form-group">
                     <label class="form-label">Default Save Path</label>
-                    <input type="text" class="form-control" id="setting-save-path" readonly>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" class="form-control" id="setting-save-path">
+                        <button class="btn btn-ghost" onclick="openDirBrowser('setting-save-path')" style="padding:10px 14px"><i class="bi bi-folder2-open"></i> Browse...</button>
+                    </div>
                 </div>
+                <button class="btn btn-primary" onclick="saveSettings()" style="margin-bottom:12px">
+                    <i class="bi bi-floppy"></i> Save Settings
+                </button>
                 <p style="font-size:12px;color:var(--text-muted)">
-                    Override by setting the <code>DOWNLOAD_PATH</code> environment variable.
+                    Changing this setting updates the default folder for all future downloads and persists across restarts.
                 </p>
             </div>
         </div>
@@ -1550,6 +1593,34 @@
             <button class="modal-close" onclick="closeModal('yt-modal')"><i class="bi bi-x"></i></button>
         </div>
         <div class="modal-body" id="yt-modal-body"></div>
+    </div>
+</div>
+
+<!-- ======================================================================== -->
+<!-- DIRECTORY BROWSER MODAL                                                   -->
+<!-- ======================================================================== -->
+<div class="modal-overlay" id="dir-modal">
+    <div class="modal-box" style="width: 520px; max-height: 80vh;">
+        <div class="modal-header">
+            <div class="modal-title">Select Directory</div>
+            <button class="modal-close" onclick="closeModal('dir-modal')"><i class="bi bi-x"></i></button>
+        </div>
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px; padding: 20px;">
+            <!-- Current Path Bar -->
+            <div style="display: flex; gap: 8px; width: 100%;">
+                <input type="text" class="form-control" id="dir-browser-path" style="padding: 8px 12px; font-size: 13px;" title="Current Directory Path">
+                <button class="btn btn-ghost btn-sm" onclick="navigateDir(document.getElementById('dir-browser-path').value)" style="height: 38px;">Go</button>
+            </div>
+            
+            <!-- Directory List Panel -->
+            <div id="dir-browser-list" style="border: 1px solid var(--border); border-radius: var(--radius-sm); height: 260px; overflow-y: auto; background: var(--bg-input);">
+                <!-- Subdirectories will be rendered here dynamically -->
+            </div>
+        </div>
+        <div class="modal-footer" style="padding: 14px 20px;">
+            <button class="btn btn-ghost" onclick="closeModal('dir-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="selectDir()">Select Folder</button>
+        </div>
     </div>
 </div>
 

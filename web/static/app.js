@@ -707,14 +707,24 @@ function loadSettings() {
 function saveSettings() {
     const dlLimit = parseInt(document.getElementById('setting-dl-limit').value) || 0;
     const ulLimit = parseInt(document.getElementById('setting-ul-limit').value) || 0;
+    const savePath = document.getElementById('setting-save-path').value.trim() || '';
 
     fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ download_limit: dlLimit, upload_limit: ulLimit })
+        body: JSON.stringify({ download_limit: dlLimit, upload_limit: ulLimit, save_path: savePath })
     })
-    .then(() => showToast('Settings saved', 'success'))
-    .catch(() => showToast('Error saving settings', 'danger'));
+    .then(r => {
+        if (!r.ok) {
+            return r.json().then(data => { throw new Error(data.error || 'Failed to save settings'); });
+        }
+        return r.json();
+    })
+    .then(() => {
+        showToast('Settings saved successfully', 'success');
+        loadSettings();
+    })
+    .catch((err) => showToast(err.message || 'Error saving settings', 'danger'));
 }
 
 // ------------------------------------------------------------------
@@ -954,3 +964,103 @@ document.addEventListener('DOMContentLoaded', () => {
     // Periodic fallback refresh every 10s (in case WS events are missed)
     setInterval(fetchAll, 10000);
 });
+
+// ------------------------------------------------------------------
+// Directory Browser Modal
+// ------------------------------------------------------------------
+let dirBrowserTargetInputId = '';
+let dirBrowserCurrentPath = '';
+
+function openDirBrowser(targetInputId) {
+    dirBrowserTargetInputId = targetInputId;
+    const currentVal = document.getElementById(targetInputId).value.trim();
+    
+    // Start browsing at current path if exists, otherwise let backend default
+    fetchDir(currentVal);
+    openModal('dir-modal');
+}
+
+function fetchDir(path) {
+    const listPanel = document.getElementById('dir-browser-list');
+    listPanel.innerHTML = '<div style="text-align:center;padding:30px"><span class="spinner"></span> Loading folders...</div>';
+
+    const url = '/api/browse-dir?path=' + encodeURIComponent(path || '');
+    fetch(url)
+        .then(r => r.json())
+        .then(data => {
+            dirBrowserCurrentPath = data.current_path;
+            document.getElementById('dir-browser-path').value = data.current_path;
+            
+            let html = '';
+            
+            // 1. Parent folder (..) navigator
+            if (data.parent_path) {
+                html += `<div class="dir-item parent-dir" onclick="navigateDir('${escJsPath(data.parent_path)}')">
+                    <i class="bi bi-arrow-left-short" style="font-size:18px;font-weight:700"></i>
+                    <span>.. (Parent Directory)</span>
+                </div>`;
+            }
+            
+            // 2. Subdirectories
+            if (data.subdirs && data.subdirs.length > 0) {
+                data.subdirs.forEach(name => {
+                    const fullPath = joinPath(data.current_path, name);
+                    html += `<div class="dir-item" onclick="selectItem(this, '${escJsPath(fullPath)}')" ondblclick="navigateDir('${escJsPath(fullPath)}')">
+                        <i class="bi bi-folder-fill"></i>
+                        <span>${esc(name)}</span>
+                    </div>`;
+                });
+            } else if (!data.parent_path && data.drives && data.drives.length > 0) {
+                // Show Windows drives if at the root
+                data.drives.forEach(drive => {
+                    html += `<div class="dir-item drive-item" onclick="selectItem(this, '${escJsPath(drive)}')" ondblclick="navigateDir('${escJsPath(drive)}')">
+                        <i class="bi bi-hdd-fill"></i>
+                        <span>${esc(drive)}</span>
+                    </div>`;
+                });
+            } else if (data.subdirs && data.subdirs.length === 0) {
+                html += `<div style="text-align:center;color:var(--text-muted);padding:30px;font-size:13px;">This directory is empty or inaccessible</div>`;
+            }
+            
+            listPanel.innerHTML = html;
+        })
+        .catch(err => {
+            console.error('fetchDir error:', err);
+            listPanel.innerHTML = `<div style="text-align:center;color:var(--red);padding:30px;font-size:13px;"><i class="bi bi-exclamation-triangle-fill"></i> Error loading directory</div>`;
+        });
+}
+
+function selectItem(element, path) {
+    // Highlight selected item
+    document.querySelectorAll('#dir-browser-list .dir-item').forEach(el => el.style.background = '');
+    element.style.background = 'var(--bg-hover)';
+    
+    dirBrowserCurrentPath = path;
+    document.getElementById('dir-browser-path').value = path;
+}
+
+function navigateDir(path) {
+    fetchDir(path);
+}
+
+function selectDir() {
+    if (dirBrowserTargetInputId) {
+        document.getElementById(dirBrowserTargetInputId).value = dirBrowserCurrentPath;
+        // Trigger saveSettings update path checks if applicable
+        document.getElementById(dirBrowserTargetInputId).dispatchEvent(new Event('change'));
+    }
+    closeModal('dir-modal');
+}
+
+// Helpers
+function escJsPath(path) {
+    if (!path) return '';
+    return path.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+function joinPath(base, name) {
+    if (!base) return name;
+    // Handle trailing slashes
+    const separator = base.endsWith('\\') || base.endsWith('/') ? '' : (base.includes('/') ? '/' : '\\');
+    return base + separator + name;
+}
