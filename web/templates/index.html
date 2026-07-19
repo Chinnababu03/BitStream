@@ -10,9 +10,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         /* ================================================================== */
-        /* Design tokens (OLED dark-mode optimized, glassmorphic palette)    */
+        /* Design Tokens & Theme Variations                                  */
         /* ================================================================== */
-        :root {
+
+        /* 1. Dark Theme + Glassmorphism (Default) */
+        body.theme-dark.style-glass {
             --bg:          #030712; /* Slate 950 */
             --bg-card:     rgba(17, 24, 39, 0.45); /* Glassmorphic Slate 900 */
             --bg-sidebar:  #020617; /* Slate 980 */
@@ -42,13 +44,224 @@
             --blur:        12px;
         }
 
+        /* 2. Dark Theme + Neuomorphism (Soft UI) */
+        body.theme-dark.style-neuo {
+            --bg:          #1e2530; /* Solid dark clay */
+            --bg-card:     #1e2530;
+            --bg-sidebar:  #181e28;
+            --bg-input:    #151a22;
+            --bg-hover:    rgba(255, 255, 255, 0.03);
+            --border:      transparent;
+            --border-faint:transparent;
+            --border-glow: transparent;
+            --accent:      #818cf8;
+            --accent-glow: rgba(129, 140, 248, 0.2);
+            --accent-dim:  rgba(129, 140, 248, 0.08);
+            --green:       #34d399;
+            --green-glow:  transparent;
+            --green-dim:   rgba(52, 211, 153, 0.1);
+            --yellow:      #fbbf24;
+            --yellow-dim:  rgba(251, 191, 36, 0.1);
+            --red:         #f87171;
+            --red-dim:     rgba(248, 113, 113, 0.1);
+            --purple:      #c084fc;
+            --purple-dim:  rgba(192, 132, 252, 0.1);
+            --text:        #e2e8f0;
+            --text-muted:  #505a6e;
+            --text-dim:    #8b9bb4;
+            --radius:      20px;
+            --radius-sm:   12px;
+            --shadow:      7px 7px 14px rgba(0, 0, 0, 0.35), -7px -7px 14px rgba(255, 255, 255, 0.03);
+            --blur:        0px;
+        }
+
+        /* 3. Dark Theme + Claymorphism (Soft Playful 3D) */
+        body.theme-dark.style-clay {
+            --bg:          #0b0e14;
+            --bg-card:     #1a2333;
+            --bg-sidebar:  #080b0f;
+            --bg-input:    #0e141f;
+            --bg-hover:    rgba(255, 255, 255, 0.04);
+            --border:      3px solid rgba(255, 255, 255, 0.05);
+            --border-faint:1px solid rgba(255, 255, 255, 0.03);
+            --border-glow: transparent;
+            --accent:      #a855f7;
+            --accent-glow: rgba(168, 85, 247, 0.3);
+            --accent-dim:  rgba(168, 85, 247, 0.1);
+            --green:       #10b981;
+            --green-dim:   rgba(16, 185, 129, 0.1);
+            --yellow:      #f59e0b;
+            --yellow-dim:  rgba(245, 158, 11, 0.1);
+            --red:         #ef4444;
+            --red-dim:     rgba(239, 68, 68, 0.1);
+            --purple:      #a855f7;
+            --purple-dim:  rgba(168, 85, 247, 0.1);
+            --text:        #f8fafc;
+            --text-muted:  #64748b;
+            --text-dim:    #cbd5e1;
+            --radius:      24px;
+            --radius-sm:   14px;
+            --shadow:      8px 8px 16px rgba(0, 0, 0, 0.4), inset -6px -6px 12px rgba(0, 0, 0, 0.45), inset 6px 6px 12px rgba(255, 255, 255, 0.05);
+            --blur:        0px;
+        }
+
+        /* 4. Dark Theme + Flat OLED */
+        body.theme-dark.style-flat {
+            --bg:          #000000;
+            --bg-card:     #0d0d0e;
+            --bg-sidebar:  #070709;
+            --bg-input:    #121214;
+            --bg-hover:    #1a1a1f;
+            --border:      #222226;
+            --border-faint:#161619;
+            --border-glow: transparent;
+            --accent:      #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.25);
+            --accent-dim:  rgba(59, 130, 246, 0.08);
+            --green:       #22c55e;
+            --green-dim:   rgba(34, 197, 94, 0.08);
+            --yellow:      #eab308;
+            --yellow-dim:  rgba(234, 179, 8, 0.08);
+            --red:         #ef4444;
+            --red-dim:     rgba(239, 68, 68, 0.08);
+            --purple:      #a855f7;
+            --purple-dim:  rgba(168, 85, 247, 0.08);
+            --text:        #ffffff;
+            --text-muted:  #52525b;
+            --text-dim:    #a1a1aa;
+            --radius:      10px;
+            --radius-sm:   6px;
+            --shadow:      none;
+            --blur:        0px;
+        }
+
+        /* 5. Light Theme + Glassmorphism */
+        body.theme-light.style-glass {
+            --bg:          #f1f5f9; /* Slate 100 */
+            --bg-card:     rgba(255, 255, 255, 0.6); /* Translucent white */
+            --bg-sidebar:  #e2e8f0; /* Slate 200 */
+            --bg-input:    #ffffff;
+            --bg-hover:    rgba(0, 0, 0, 0.04);
+            --border:      rgba(0, 0, 0, 0.06);
+            --border-faint:rgba(0, 0, 0, 0.03);
+            --border-glow: rgba(99, 102, 241, 0.15);
+            --accent:      #4f46e5; /* Indigo 600 */
+            --accent-glow: rgba(79, 70, 229, 0.2);
+            --accent-dim:  rgba(79, 70, 229, 0.08);
+            --green:       #059669;
+            --green-dim:   rgba(5, 150, 105, 0.08);
+            --yellow:      #d97706;
+            --yellow-dim:  rgba(217, 119, 6, 0.08);
+            --red:         #dc2626;
+            --red-dim:     rgba(220, 38, 38, 0.08);
+            --purple:      #7c3aed;
+            --purple-dim:  rgba(124, 58, 237, 0.08);
+            --text:        #0f172a; /* Slate 900 */
+            --text-muted:  #94a3b8;
+            --text-dim:    #475569;
+            --radius:      16px;
+            --radius-sm:   10px;
+            --shadow:      0 8px 32px 0 rgba(31, 38, 135, 0.06);
+            --blur:        12px;
+        }
+
+        /* 6. Light Theme + Neuomorphism */
+        body.theme-light.style-neuo {
+            --bg:          #e0e5ec; /* Cool Gray-Blue Clay */
+            --bg-card:     #e0e5ec;
+            --bg-sidebar:  #d1d9e6;
+            --bg-input:    #e0e5ec;
+            --bg-hover:    rgba(0, 0, 0, 0.03);
+            --border:      transparent;
+            --border-faint:transparent;
+            --border-glow: transparent;
+            --accent:      #4f46e5;
+            --accent-glow: rgba(79, 70, 229, 0.2);
+            --accent-dim:  rgba(79, 70, 229, 0.08);
+            --green:       #059669;
+            --green-dim:   rgba(5, 150, 105, 0.08);
+            --yellow:      #d97706;
+            --yellow-dim:  rgba(217, 119, 6, 0.08);
+            --red:         #dc2626;
+            --red-dim:     rgba(220, 38, 38, 0.08);
+            --purple:      #7c3aed;
+            --purple-dim:  rgba(124, 58, 237, 0.08);
+            --text:        #3d4852;
+            --text-muted:  #7b8a9b;
+            --text-dim:    #4f5e71;
+            --radius:      20px;
+            --radius-sm:   12px;
+            --shadow:      9px 9px 16px rgba(163, 177, 198, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.8);
+            --blur:        0px;
+        }
+
+        /* 7. Light Theme + Claymorphism */
+        body.theme-light.style-clay {
+            --bg:          #f4f1fa; /* Cool Lavender */
+            --bg-card:     #ffffff;
+            --bg-sidebar:  #eae5f3;
+            --bg-input:    #f9f7fc;
+            --bg-hover:    rgba(124, 58, 237, 0.05);
+            --border:      3px solid #e9e3f3;
+            --border-faint:1px solid #f2edf9;
+            --border-glow: transparent;
+            --accent:      #7c3aed;
+            --accent-glow: rgba(124, 58, 237, 0.2);
+            --accent-dim:  rgba(124, 58, 237, 0.06);
+            --green:       #10b981;
+            --green-dim:   rgba(16, 185, 129, 0.08);
+            --yellow:      #f59e0b;
+            --yellow-dim:  rgba(245, 158, 11, 0.08);
+            --red:         #ef4444;
+            --red-dim:     rgba(239, 68, 68, 0.08);
+            --purple:      #a855f7;
+            --purple-dim:  rgba(168, 85, 247, 0.08);
+            --text:        #332f3a;
+            --text-muted:  #8b8296;
+            --text-dim:    #5c5665;
+            --radius:      26px;
+            --radius-sm:   14px;
+            --shadow:      8px 8px 16px rgba(124, 58, 237, 0.06), inset -6px -6px 12px rgba(0, 0, 0, 0.04), inset 6px 6px 12px rgba(255, 255, 255, 0.8);
+            --blur:        0px;
+        }
+
+        /* 8. Light Theme + Flat */
+        body.theme-light.style-flat {
+            --bg:          #ffffff;
+            --bg-card:     #f9fafb;
+            --bg-sidebar:  #f3f4f6;
+            --bg-input:    #ffffff;
+            --bg-hover:    #f3f4f6;
+            --border:      #e5e7eb;
+            --border-faint:#f3f4f6;
+            --border-glow: transparent;
+            --accent:      #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.2);
+            --accent-dim:  rgba(59, 130, 246, 0.06);
+            --green:       #22c55e;
+            --green-dim:   rgba(34, 197, 94, 0.06);
+            --yellow:      #eab308;
+            --yellow-dim:  rgba(234, 179, 8, 0.06);
+            --red:         #ef4444;
+            --red-dim:     rgba(239, 68, 68, 0.06);
+            --purple:      #a855f7;
+            --purple-dim:  rgba(168, 85, 247, 0.06);
+            --text:        #111827;
+            --text-muted:  #71717a;
+            --text-dim:    #3f3f46;
+            --radius:      12px;
+            --radius-sm:   8px;
+            --shadow:      0 1px 3px rgba(0,0,0,0.08);
+            --blur:        0px;
+        }
+
         /* ================================================================== */
         /* Base / Global overrides                                           */
         /* ================================================================== */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background: radial-gradient(ellipse at top, #0c1020 0%, #030712 75%), #030712;
+            background: radial-gradient(ellipse at top, rgba(99, 102, 241, 0.08) 0%, var(--bg) 75%), var(--bg);
             color: var(--text);
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             font-size: 14px;
@@ -56,10 +269,15 @@
             display: flex;
             letter-spacing: -0.01em;
             overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body.theme-light {
+            background: radial-gradient(ellipse at top, rgba(79, 70, 229, 0.05) 0%, var(--bg) 80%), var(--bg);
         }
 
         a { color: var(--accent); text-decoration: none; transition: color 0.15s; }
-        a:hover { color: #818cf8; }
+        a:hover { color: var(--accent); filter: brightness(1.2); }
         input, select, textarea { font-family: inherit; }
 
         /* Custom Scrollbars */
@@ -71,7 +289,7 @@
             background: var(--bg-sidebar);
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(120, 120, 120, 0.2);
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
@@ -94,6 +312,7 @@
             padding: 24px 16px;
             gap: 6px;
             z-index: 100;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .sidebar-logo {
@@ -115,6 +334,7 @@
             border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             font-size: 18px;
+            color: #fff !important;
             box-shadow: 0 0 16px var(--accent-glow);
         }
 
@@ -133,15 +353,15 @@
         }
 
         .nav-item:hover {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--bg-hover);
             color: var(--text);
             border-color: var(--border-faint);
         }
 
         .nav-item.active {
             background: var(--accent-dim);
-            color: #818cf8;
-            border-color: rgba(99, 102, 241, 0.2);
+            color: var(--accent);
+            border-color: rgba(99, 102, 241, 0.15);
             box-shadow: inset 0 0 12px rgba(99, 102, 241, 0.05);
         }
 
@@ -226,11 +446,16 @@
             justify-content: space-between;
             padding: 20px 32px;
             border-bottom: 1px solid var(--border-faint);
-            background: rgba(10, 15, 30, 0.4);
+            background: rgba(10, 15, 30, 0.3);
             backdrop-filter: blur(var(--blur));
             position: sticky;
             top: 0;
             z-index: 50;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        body.theme-light .topbar {
+            background: rgba(255, 255, 255, 0.4);
         }
 
         .topbar-title {
@@ -240,7 +465,7 @@
             letter-spacing: -0.02em;
         }
 
-        .topbar-actions { display: flex; gap: 10px; }
+        .topbar-actions { display: flex; gap: 10px; align-items: center; }
 
         /* Page Content */
         .content { padding: 32px; flex: 1; }
@@ -269,19 +494,20 @@
 
         .btn-primary {
             background: linear-gradient(135deg, var(--accent) 0%, #4f46e5 100%);
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            color: #fff !important;
+            box-shadow: 0 4px 12px var(--accent-glow);
         }
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.45);
+            box-shadow: 0 6px 16px var(--accent-glow);
+            filter: brightness(1.1);
         }
         .btn-primary:active:not(:disabled) {
             transform: translateY(0);
         }
 
         .btn-ghost {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(120, 120, 120, 0.05);
             color: var(--text-dim);
             border: 1px solid var(--border);
         }
@@ -293,24 +519,24 @@
 
         .btn-danger {
             background: var(--red-dim);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.25);
+            color: var(--red);
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
         .btn-danger:hover:not(:disabled) {
             background: var(--red);
-            color: #fff;
+            color: #fff !important;
             box-shadow: 0 4px 12px var(--red-dim);
             transform: translateY(-1px);
         }
 
         .btn-success {
             background: var(--green-dim);
-            color: #a7f3d0;
-            border: 1px solid rgba(34, 197, 94, 0.25);
+            color: var(--green);
+            border: 1px solid rgba(34, 197, 94, 0.2);
         }
         .btn-success:hover:not(:disabled) {
             background: var(--green);
-            color: #fff;
+            color: #fff !important;
             box-shadow: 0 4px 12px var(--green-dim);
             transform: translateY(-1px);
         }
@@ -329,7 +555,7 @@
         }
 
         .stat-card {
-            background: rgba(17, 24, 39, 0.4);
+            background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 20px;
@@ -345,14 +571,14 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent);
             pointer-events: none;
         }
 
         .stat-card:hover {
-            border-color: rgba(99, 102, 241, 0.4);
+            border-color: var(--accent-glow);
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 0 16px rgba(99, 102, 241, 0.05);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 0 16px var(--accent-glow);
         }
 
         .stat-card-icon {
@@ -385,7 +611,7 @@
         }
 
         .dl-card {
-            background: rgba(17, 24, 39, 0.5);
+            background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             overflow: hidden;
@@ -393,13 +619,13 @@
             backdrop-filter: blur(var(--blur));
             display: flex;
             flex-direction: column;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow);
         }
 
         .dl-card:hover {
-            border-color: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent);
             transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
         }
         .dl-card:hover .dl-card-header { border-color: var(--accent-dim); }
 
@@ -444,21 +670,21 @@
             white-space: nowrap;
         }
 
-        .badge-downloading { background: var(--accent-dim); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.2); }
-        .badge-seeding     { background: var(--green-dim);  color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
-        .badge-finished    { background: var(--green-dim);  color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
-        .badge-paused      { background: var(--yellow-dim); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.2); }
-        .badge-error       { background: var(--red-dim);    color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .badge-queued      { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--border-faint); }
-        .badge-checking    { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(99, 102, 241, 0.2); }
-        .badge-processing  { background: var(--purple-dim); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.2); }
+        .badge-downloading { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-glow); }
+        .badge-seeding     { background: var(--green-dim);  color: var(--green); border: 1px solid var(--green-glow); }
+        .badge-finished    { background: var(--green-dim);  color: var(--green); border: 1px solid var(--green-glow); }
+        .badge-paused      { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(245,158,11,0.2); }
+        .badge-error       { background: var(--red-dim);    color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+        .badge-queued      { background: rgba(120,120,120,0.05); color: var(--text-muted); border: 1px solid var(--border-faint); }
+        .badge-checking    { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-glow); }
+        .badge-processing  { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(168,85,247,0.2); }
 
         /* Progress Bar */
         .progress-wrap { padding: 14px 20px 10px; }
 
         .progress-bar {
             height: 6px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(120, 120, 120, 0.1);
             border-radius: 3px;
             overflow: hidden;
             margin-bottom: 8px;
@@ -508,7 +734,7 @@
             text-align: center;
             padding: 80px 20px;
             color: var(--text-muted);
-            background: rgba(255, 255, 255, 0.01);
+            background: rgba(120, 120, 120, 0.01);
             border: 1px dashed var(--border);
             border-radius: var(--radius);
             margin: 12px 0;
@@ -542,14 +768,14 @@
             padding: 11px 14px;
             font-size: 14px;
             transition: all 0.2s;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow), inset 0 2px 4px rgba(0, 0, 0, 0.2);
-            background: rgba(11, 15, 25, 0.8);
+            box-shadow: 0 0 0 3px var(--accent-glow), inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: var(--bg-input);
         }
 
         .form-control::placeholder { color: var(--text-muted); }
@@ -567,13 +793,13 @@
             text-align: center;
             cursor: pointer;
             transition: all .25s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(11, 15, 25, 0.4);
+            background: var(--bg-input);
         }
 
         .drop-zone:hover, .drop-zone.drag-over {
             border-color: var(--accent);
             background: var(--accent-dim);
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.05);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
 
         .drop-zone i { font-size: 44px; color: var(--text-dim); margin-bottom: 14px; display: block; transition: transform 0.2s; }
@@ -611,7 +837,7 @@
 
         .add-tab-btn.active {
             background: var(--accent);
-            color: #fff;
+            color: #fff !important;
             border-color: rgba(255, 255, 255, 0.08);
             box-shadow: 0 4px 12px var(--accent-glow);
         }
@@ -640,7 +866,7 @@
 
         /* Card Container in Settings */
         .settings-card {
-            background: rgba(17, 24, 39, 0.4);
+            background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 28px;
@@ -664,7 +890,7 @@
         /* ================================================================== */
         .modal-overlay {
             position: fixed; inset: 0;
-            background: rgba(2, 6, 23, 0.7);
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(12px);
             display: none;
             align-items: center;
@@ -673,11 +899,15 @@
             padding: 20px;
         }
 
+        body.theme-light .modal-overlay {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
         .modal-overlay.open { display: flex; }
 
         .modal-box {
-            background: #0b0f19;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 20px;
             width: 600px;
             max-width: 100%;
@@ -685,7 +915,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(99, 102, 241, 0.05);
+            box-shadow: var(--shadow);
             animation: modal-in .3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
@@ -703,7 +933,7 @@
 
         .modal-close {
             width: 32px; height: 32px;
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--bg-hover);
             border: 1px solid var(--border-faint);
             border-radius: 8px;
             color: var(--text-muted);
@@ -713,7 +943,7 @@
             transition: all 0.2s;
         }
 
-        .modal-close:hover { background: var(--red-dim); color: #f87171; border-color: rgba(239, 68, 68, 0.2); }
+        .modal-close:hover { background: var(--red-dim); color: var(--red); border-color: rgba(239, 68, 68, 0.2); }
 
         .modal-body { padding: 24px; overflow-y: auto; flex: 1; }
         .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-faint); display: flex; gap: 10px; justify-content: flex-end; }
@@ -724,13 +954,13 @@
         .info-table tr:last-child td { border-bottom: none; }
         .info-table .label { color: var(--text-muted); width: 40%; font-weight: 500; }
         .info-table .value { color: var(--text); font-weight: 600; text-align: right; }
-        .info-table code { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-faint); padding: 3px 7px; border-radius: 6px; font-size: 11px; font-family: monospace; color: #818cf8; }
+        .info-table code { background: rgba(120, 120, 120, 0.05); border: 1px solid var(--border-faint); padding: 3px 7px; border-radius: 6px; font-size: 11px; font-family: monospace; color: var(--accent); }
 
         /* File List */
-        .file-list { border: 1px solid var(--border-faint); border-radius: var(--radius-sm); overflow: hidden; background: rgba(0, 0, 0, 0.15); }
+        .file-list { border: 1px solid var(--border-faint); border-radius: var(--radius-sm); overflow: hidden; background: rgba(0, 0, 0, 0.05); }
         .file-item { display: flex; align-items: center; gap: 12px; padding: 11px 16px; border-bottom: 1px solid var(--border-faint); font-size: 13px; }
         .file-item:last-child { border-bottom: none; }
-        .file-item:hover { background: rgba(255, 255, 255, 0.02); }
+        .file-item:hover { background: var(--bg-hover); }
         .file-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
         .file-size { color: var(--text-muted); white-space: nowrap; font-size: 12px; }
 
@@ -764,9 +994,9 @@
         }
 
         .toast {
-            background: rgba(15, 23, 42, 0.9);
+            background: var(--bg-card);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             padding: 14px 18px;
             min-width: 280px;
@@ -775,7 +1005,7 @@
             align-items: flex-start;
             gap: 12px;
             font-size: 13px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
             pointer-events: all;
             animation: toast-in .3s cubic-bezier(0.34, 1.56, 0.64, 1);
             border-left: 4px solid var(--accent);
@@ -802,6 +1032,93 @@
         .tab-page { display: none; }
         .tab-page.active { display: block; animation: fade-in 0.25s ease-out; }
         @keyframes fade-in { from { opacity: 0; transform: translateY(4px); } }
+
+        /* ================================================================== */
+        /* Specific Style Overrides (Neuo & Clay)                             */
+        /* ================================================================== */
+
+        /* --- Neuomorphism (Neuo) specific rules --- */
+        body.style-neuo .sidebar {
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15) !important;
+            border-right: none !important;
+        }
+        body.style-neuo .topbar {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+            border-bottom: none !important;
+        }
+        body.style-neuo .dl-card,
+        body.style-neuo .stat-card,
+        body.style-neuo .settings-card,
+        body.style-neuo .modal-box {
+            border: none !important;
+            background: var(--bg-card) !important;
+            box-shadow: var(--shadow) !important;
+        }
+        body.style-neuo .form-control,
+        body.style-neuo .drop-zone,
+        body.style-neuo .add-tabs {
+            border: none !important;
+            background: var(--bg-input) !important;
+            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.25), inset -4px -4px 8px rgba(255, 255, 255, 0.02) !important;
+        }
+        body.theme-light.style-neuo .form-control,
+        body.theme-light.style-neuo .drop-zone,
+        body.theme-light.style-neuo .add-tabs {
+            box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.5), inset -4px -4px 8px rgba(255, 255, 255, 0.8) !important;
+        }
+        body.style-neuo .nav-item.active {
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.35), inset -2px -2px 5px rgba(255,255,255,0.02) !important;
+            border: none !important;
+        }
+        body.theme-light.style-neuo .nav-item.active {
+            box-shadow: inset 3px 3px 6px rgba(163,177,198,0.5), inset -3px -3px 6px rgba(255,255,255,0.7) !important;
+        }
+        body.style-neuo .btn-primary {
+            border: none !important;
+            box-shadow: 4px 4px 8px rgba(0,0,0,0.25), -4px -4px 8px rgba(255,255,255,0.01) !important;
+        }
+        body.style-neuo .btn-primary:active {
+            box-shadow: inset 3px 3px 6px rgba(0,0,0,0.3) !important;
+        }
+
+        /* --- Claymorphism (Clay) specific rules --- */
+        body.style-clay .dl-card,
+        body.style-clay .stat-card,
+        body.style-clay .settings-card,
+        body.style-clay .modal-box {
+            border: var(--border) !important;
+            box-shadow: var(--shadow) !important;
+        }
+        body.style-clay .form-control,
+        body.style-clay .drop-zone,
+        body.style-clay .add-tabs {
+            border: var(--border) !important;
+            box-shadow: inset -4px -4px 8px rgba(0, 0, 0, 0.1), inset 4px 4px 8px rgba(255, 255, 255, 0.05) !important;
+        }
+        body.theme-light.style-clay .form-control,
+        body.theme-light.style-clay .drop-zone,
+        body.theme-light.style-clay .add-tabs {
+            box-shadow: inset -4px -4px 8px rgba(0, 0, 0, 0.03), inset 4px 4px 8px rgba(255, 255, 255, 0.7) !important;
+        }
+        body.style-clay .btn {
+            border-radius: var(--radius-sm) !important;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.25) !important;
+            border: 2px solid rgba(255, 255, 255, 0.05) !important;
+        }
+        body.style-clay .btn-primary {
+            box-shadow: 4px 4px 0 rgba(99, 102, 241, 0.25) !important;
+        }
+        body.style-clay .btn:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2) !important;
+        }
+        body.style-clay .btn:active {
+            transform: translateY(2px) !important;
+            box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3) !important;
+        }
+        body.style-clay .dl-badge {
+            border: var(--border) !important;
+        }
 
         /* ================================================================== */
         /* Responsive Overrides                                              */
@@ -886,6 +1203,18 @@
     <header class="topbar">
         <div class="topbar-title" id="topbar-title">Dashboard</div>
         <div class="topbar-actions" id="topbar-actions">
+            <!-- Appearance Quick Switchers -->
+            <div style="display:flex; gap:6px; align-items:center; margin-right:8px;">
+                <select class="priority-select" id="quick-style-select" onchange="quickChangeStyle(this.value)" style="padding:5px 10px; height:32px; font-size:12px;" title="Quick UI Style Switcher">
+                    <option value="glass">🔮 Glass</option>
+                    <option value="neuo">🎛️ Neuo</option>
+                    <option value="clay">🎈 Clay</option>
+                    <option value="flat">⬛ Flat</option>
+                </select>
+                <button class="btn btn-ghost btn-sm btn-icon" id="quick-theme-toggle" onclick="toggleQuickTheme()" style="height:32px; width:32px; display:flex; align-items:center; justify-content:center;" title="Toggle Light/Dark Theme">
+                    <i class="bi bi-moon-fill" id="quick-theme-icon"></i>
+                </button>
+            </div>
             <button class="btn btn-ghost btn-sm" id="pause-all-btn" title="Pause all torrents">
                 <i class="bi bi-pause-fill"></i> Pause All
             </button>
@@ -1133,6 +1462,26 @@
             </div>
 
             <div class="settings-card" style="max-width:560px">
+                <h3><i class="bi bi-palette" style="margin-right:8px;color:var(--accent)"></i>Appearance Settings</h3>
+                <div class="form-group">
+                    <label class="form-label">Color Theme</label>
+                    <select class="form-control" id="appearance-theme" onchange="changeAppearance()">
+                        <option value="dark">Dark Theme (OLED / Midnight)</option>
+                        <option value="light">Light Theme (Clean / Daylight)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">UI Design Style</label>
+                    <select class="form-control" id="appearance-style" onchange="changeAppearance()">
+                        <option value="glass">Glassmorphism (Frosted Transparent)</option>
+                        <option value="neuo">Neuomorphism (Soft Embossed 3D)</option>
+                        <option value="clay">Claymorphism (Soft Playful 3D)</option>
+                        <option value="flat">Flat (High Contrast / Standard)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-card" style="max-width:560px">
                 <h3><i class="bi bi-folder2-open" style="margin-right:8px;color:var(--accent)"></i>Storage</h3>
                 <div class="form-group">
                     <label class="form-label">Default Save Path</label>
@@ -1200,7 +1549,84 @@
     </div>
 </div>
 
+
+    <!-- Appearance / Multi-Theme Switcher Logic -->
+    <script>
+        // State
+        let currentTheme = localStorage.getItem('bt_theme') || 'dark';
+        let currentStyle = localStorage.getItem('bt_style') || 'glass';
+
+        function initAppearance() {
+            // Apply states to body
+            document.body.className = ''; // Reset
+            document.body.classList.add('theme-' + currentTheme, 'style-' + currentStyle);
+
+            // Sync Settings Dropdowns if they exist
+            const themeSelect = document.getElementById('appearance-theme');
+            const styleSelect = document.getElementById('appearance-style');
+            if (themeSelect) themeSelect.value = currentTheme;
+            if (styleSelect) styleSelect.value = currentStyle;
+
+            // Sync Quick Switchers in Header
+            const quickStyle = document.getElementById('quick-style-select');
+            const quickIcon = document.getElementById('quick-theme-icon');
+            if (quickStyle) quickStyle.value = currentStyle;
+            if (quickIcon) {
+                quickIcon.className = currentTheme === 'dark' ? 'bi bi-moon-fill' : 'bi bi-sun-fill';
+                quickIcon.style.color = currentTheme === 'dark' ? 'var(--accent)' : '#f59e0b';
+            }
+        }
+
+        // Triggered by Quick Switch Dropdown
+        function quickChangeStyle(style) {
+            currentStyle = style;
+            localStorage.setItem('bt_style', style);
+            initAppearance();
+        }
+
+        // Triggered by Quick Sun/Moon Toggle Button
+        function toggleQuickTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('bt_theme', currentTheme);
+            initAppearance();
+        }
+
+        // Triggered by Settings Page Selectors
+        function changeAppearance() {
+            const themeSelect = document.getElementById('appearance-theme');
+            const styleSelect = document.getElementById('appearance-style');
+            if (themeSelect) {
+                currentTheme = themeSelect.value;
+                localStorage.setItem('bt_theme', currentTheme);
+            }
+            if (styleSelect) {
+                currentStyle = styleSelect.value;
+                localStorage.setItem('bt_style', currentStyle);
+            }
+            initAppearance();
+        }
+
+        // Run on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initAppearance();
+            
+            // Re-sync options when settings page is navigated to
+            const settingsNav = document.getElementById('nav-settings');
+            if (settingsNav) {
+                settingsNav.addEventListener('click', () => {
+                    setTimeout(() => {
+                        const themeSelect = document.getElementById('appearance-theme');
+                        const styleSelect = document.getElementById('appearance-style');
+                        if (themeSelect) themeSelect.value = currentTheme;
+                        if (styleSelect) styleSelect.value = currentStyle;
+                    }, 50);
+                });
+            }
+        });
+    </script>
+
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
 <script src="/static/app.js"></script>
 </body>
 </html>
