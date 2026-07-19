@@ -71,6 +71,19 @@ Ensure you have Python 3.8+ installed.
 
 ---
 
+## Usage & Controls Distinction
+
+Because BitStream integrates two different download technologies, they have different capabilities:
+
+| Feature | BitTorrent Downloads (Magnet/Files) | YouTube / Web Video Downloads |
+| :--- | :--- | :--- |
+| **Engine** | Peer-to-peer pieces via `libtorrent` | Direct HTTP stream extraction via `yt-dlp` |
+| **Pause & Resume** | ✅ **Supported** (individual and "Pause All" / "Resume All") | ❌ **Unsupported** (stream extractions cannot be paused) |
+| **Cancellation** | ✅ Supported (via Delete/Trash icon) | ✅ Supported (via Delete/Trash icon) |
+| **Card Action Buttons** | Pause/Resume, Info (i), and Delete (Trash) | Info (i) and Delete (Cancel) |
+
+---
+
 ## Project Structure
 
 ```

@@ -108,3 +108,16 @@ The application can be customized using the following environment variables:
   - Default (Local/Windows): `C:\Users\chinn\Downloads\TorrentDownloaders`
   - Default (Local/Linux): `$HOME/Downloads/TorrentDownloaders`
 - `LISTEN_PORT`: Port libtorrent uses to listen for incoming peer connections (default: `6881`).
+
+---
+
+## Usage Note: Torrent vs. YouTube Controls
+
+BitStream handles two different types of downloading technologies, resulting in different control behaviors:
+1. **Torrent Downloads (Blue Icon)**:
+   - Supports **Pause** and **Resume** (individually and via the "Pause All" / "Resume All" topbar buttons).
+   - Supports **Deletion/Removal** (optionally deleting files from disk).
+2. **YouTube & Web Video Downloads (Red Icon)**:
+   - Does **NOT** support pause/resume (network media stream extractions via `yt-dlp` must run continuously).
+   - Shows only the **Info** and **Delete (Cancel)** buttons. To stop a YouTube download, click the red **Delete (Trash)** button.
+
