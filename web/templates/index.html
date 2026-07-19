@@ -1203,8 +1203,8 @@
     <header class="topbar">
         <div class="topbar-title" id="topbar-title">Dashboard</div>
         <div class="topbar-actions" id="topbar-actions">
-            <!-- Appearance Quick Switchers -->
-            <div style="display:flex; gap:6px; align-items:center; margin-right:8px;">
+            <!-- Appearance Quick Switchers (Always Visible) -->
+            <div style="display:flex; gap:6px; align-items:center;">
                 <select class="priority-select" id="quick-style-select" onchange="quickChangeStyle(this.value)" style="padding:5px 10px; height:32px; font-size:12px;" title="Quick UI Style Switcher">
                     <option value="glass">🔮 Glass</option>
                     <option value="neuo">🎛️ Neuo</option>
@@ -1215,12 +1215,16 @@
                     <i class="bi bi-moon-fill" id="quick-theme-icon"></i>
                 </button>
             </div>
-            <button class="btn btn-ghost btn-sm" id="pause-all-btn" title="Pause all torrents">
-                <i class="bi bi-pause-fill"></i> Pause All
-            </button>
-            <button class="btn btn-ghost btn-sm" id="resume-all-btn" title="Resume all torrents">
-                <i class="bi bi-play-fill"></i> Resume All
-            </button>
+            
+            <!-- Torrent Actions (Only visible on Dashboard & Torrents tabs) -->
+            <div id="torrent-actions-container" style="display:flex; gap:6px;">
+                <button class="btn btn-ghost btn-sm" id="pause-all-btn" title="Pause all torrents">
+                    <i class="bi bi-pause-fill"></i> Pause All
+                </button>
+                <button class="btn btn-ghost btn-sm" id="resume-all-btn" title="Resume all torrents">
+                    <i class="bi bi-play-fill"></i> Resume All
+                </button>
+            </div>
         </div>
     </header>
 

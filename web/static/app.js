@@ -733,8 +733,11 @@ function showTab(name) {
     const titles = { dashboard:'Dashboard', torrents:'Torrents', youtube:'YouTube Downloads', add:'Add Download', settings:'Settings' };
     document.getElementById('topbar-title').textContent = titles[name] || name;
 
-    // Hide topbar actions on non-torrent pages
-    document.getElementById('topbar-actions').style.display = ['dashboard','torrents'].includes(name) ? '' : 'none';
+    // Hide torrent actions on non-torrent pages
+    const torrentActions = document.getElementById('torrent-actions-container');
+    if (torrentActions) {
+        torrentActions.style.display = ['dashboard','torrents'].includes(name) ? '' : 'none';
+    }
 
     if (name === 'settings') loadSettings();
 }

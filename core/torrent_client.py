@@ -182,6 +182,8 @@ class TorrentClient:
                 handle = self.torrents[torrent_hash]
                 handle.auto_managed(True)
                 handle.resume()
+                if torrent_hash in self.torrent_info:
+                    self.torrent_info[torrent_hash].state = TorrentState.QUEUED
         self._notify('torrent_resumed', {'hash': torrent_hash})
 
     def pause_all(self):
@@ -198,6 +200,9 @@ class TorrentClient:
             for handle in self.torrents.values():
                 handle.auto_managed(True)
                 handle.resume()
+            for info in self.torrent_info.values():
+                if info.state == TorrentState.PAUSED:
+                    info.state = TorrentState.QUEUED
         self._notify('all_resumed', {})
 
     def set_download_limit(self, limit_kbps: int):
