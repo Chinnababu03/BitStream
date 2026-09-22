@@ -614,7 +614,12 @@ function addYouTubeDownload() {
     .then(r => r.json())
     .then(data => {
         if (data.success) {
-            showToast('YouTube download started!', 'success');
+            if (data.is_playlist) {
+                const title = data.playlist_title ? `"${data.playlist_title}"` : 'playlist';
+                showToast(`🎵 Added ${title} (${data.count} tracks) to download queue!`, 'success');
+            } else {
+                showToast('YouTube download started!', 'success');
+            }
             document.getElementById('yt-url-input').value = '';
             fetchYT();
             showTab('youtube');

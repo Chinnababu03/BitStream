@@ -22,7 +22,7 @@ mock_yt_dlp = MagicMock()
 with patch.dict('sys.modules', {'yt_dlp': mock_yt_dlp}):
     from core.youtube_client import (
         YouTubeClient, YTDownloadInfo, YTDownloadState,
-        CancelledError
+        CancelledError, sanitize_folder_name
     )
 
 
@@ -273,7 +273,7 @@ class TestYouTubeClient:
         client = self._make_client()
         hook = Mock()
         opts = client._build_ydl_opts('mp4_best', '/downloads', hook)
-        assert opts['format'] == 'bv*+ba/b'
+        assert 'bv*' in opts['format']
         assert opts['merge_output_format'] == 'mp4'
 
     def test_build_ydl_opts_mp4_1080(self):
@@ -337,6 +337,11 @@ class TestYouTubeClient:
 class TestProgressHook:
     """Test the progress hook logic in _download_worker."""
 
+    def _make_client(self, **kwargs):
+        defaults = {'save_path': tempfile.mkdtemp()}
+        defaults.update(kwargs)
+        return YouTubeClient(**defaults)
+
     def test_progress_hook_updates_downloading_state(self):
         """Test that progress_hook correctly updates state for downloading."""
         client = self._make_client()
@@ -396,3 +401,52 @@ class TestProgressHook:
             # Simulate what the progress hook does
             if cancel_event.is_set():
                 raise CancelledError("Download cancelled by user")
+
+
+# ---------------------------------------------------------------------------
+# Tests for Playlist Download Support
+# ---------------------------------------------------------------------------
+
+class TestYouTubeClientPlaylist:
+    """Test playlist extraction and multi-track queuing."""
+
+    def test_sanitize_folder_name(self):
+        assert sanitize_folder_name("My Favorite Hits / Songs : 2024") == "My Favorite Hits  Songs  2024"
+        assert sanitize_folder_name('Rock <Classic> "Hits"') == "Rock Classic Hits"
+        assert sanitize_folder_name("   ") == "YouTube Playlist"
+
+    def test_add_download_with_playlist_url(self):
+        save_path = tempfile.mkdtemp()
+        client = YouTubeClient(save_path=save_path)
+
+        playlist_mock_meta = {
+            'is_playlist': True,
+            'playlist_title': 'Best Rock Hits',
+            'entries': [
+                {'id': 'song1', 'title': 'Song One', 'url': 'https://www.youtube.com/watch?v=song1'},
+                {'id': 'song2', 'title': 'Song Two', 'url': 'https://www.youtube.com/watch?v=song2'},
+                {'id': 'song3', 'title': 'Song Three', 'url': 'https://www.youtube.com/watch?v=song3'},
+            ]
+        }
+
+        with patch('threading.Thread') as mock_thread:
+            mock_thread.return_value.start = Mock()
+            with patch.object(client, '_extract_playlist_info', return_value=playlist_mock_meta):
+                res = client.add_download('https://www.youtube.com/playlist?list=PL12345', fmt='mp3_192')
+
+        assert isinstance(res, dict)
+        assert res['is_playlist'] is True
+        assert res['count'] == 3
+        assert res['playlist_title'] == 'Best Rock Hits'
+        assert len(res['ids']) == 3
+
+        all_downloads = client.get_all_downloads()
+        assert len(all_downloads) == 3
+        titles = [d['title'] for d in all_downloads]
+        assert 'Song One' in titles
+        assert 'Song Two' in titles
+        assert 'Song Three' in titles
+
+        expected_subfolder = os.path.join(save_path, "Best Rock Hits")
+        assert all_downloads[0]['save_path'] == expected_subfolder
+

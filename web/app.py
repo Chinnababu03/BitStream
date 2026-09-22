@@ -316,8 +316,17 @@ def create_app(settings: Settings = None) -> tuple:
         if not manager.is_safe_path(save_path):
             return jsonify({'error': 'Save path is outside the allowed downloads directory'}), 400
 
-        download_id = manager.add_youtube_download(url, fmt=fmt, save_path=save_path, reencode=reencode)
-        return jsonify({'id': download_id, 'success': True})
+        res = manager.add_youtube_download(url, fmt=fmt, save_path=save_path, reencode=reencode)
+        if isinstance(res, dict):
+            return jsonify({
+                'id': res.get('id', ''),
+                'ids': res.get('ids', []),
+                'is_playlist': res.get('is_playlist', False),
+                'count': res.get('count', 1),
+                'playlist_title': res.get('playlist_title', ''),
+                'success': True
+            })
+        return jsonify({'id': res, 'ids': [res], 'is_playlist': False, 'count': 1, 'playlist_title': '', 'success': True})
 
     @app.route('/api/youtube/<download_id>', methods=['DELETE'])
     def remove_yt_download(download_id):
