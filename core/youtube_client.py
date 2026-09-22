@@ -119,6 +119,11 @@ class YouTubeClient:
             'quiet': True,
             'no_warnings': True,
             'socket_timeout': 15,
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android', 'web', 'mweb']
+                }
+            },
         }
         try:
             with yt_dlp.YoutubeDL(opts) as ydl:
@@ -285,6 +290,16 @@ class YouTubeClient:
             else:
                 opts['format'] = 'bv*[vcodec^=avc1]+ba/bv*+ba/b'
                 opts['merge_output_format'] = 'mp4'
+
+        opts.update({
+            'socket_timeout': 30,
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android', 'web', 'mweb']
+                }
+            },
+            'nocheckcertificate': True,
+        })
 
         return opts
 
